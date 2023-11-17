@@ -39,7 +39,7 @@ jobs:
           context: .
           load: true
           labels: |
-            ci.build_timestamp=${{ steps.build_time.outputs.time }}
+            ci.timestamp=${{ steps.build_time.outputs.time }}
             ci.image=${{ github.repository }}
             ci.tag=${{ github.ref_name }}
             ci.commit=${{ github.sha }}
