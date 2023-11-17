@@ -9,7 +9,7 @@ ARG DEBIAN_VERSION
 ENV PYTHONUSERBASE=/opt/python
 
 RUN apt-get update && \
-    apt-get -y --no-install-recommends install git && \
+    apt-get -y --no-install-recommends install ca-certificates git && \
     rm -rf /var/lib/apt/lists/*
 
 # Create manifest json file
