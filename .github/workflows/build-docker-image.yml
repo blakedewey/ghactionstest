@@ -40,16 +40,6 @@ jobs:
           build-args: |
             BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
       -
-        name: Create New Dockerfile
-        run: |
-          echo "FROM ${{ github.repository }}:${{ github.ref_name }}" > Dockerfile.new
-      -
         name: Build labeled image and push
-        uses: docker/build-push-action@v5
-        with:
-          context: .
-          file: Dockerfile.new
-          push: true
-          labels: |
-            ci.digest=${{ steps.docker_build.outputs.digest }}
-          tags: ${{ github.repository }}:${{ github.ref_name }}
+        run: |
+          echo "FROM ${{ github.repository }}:${{ github.ref_name }}" | docker buildx build --label ci.digest=${{ steps.docker_build.outputs.digest }} -t ${{ github.repository }}:${{ github.ref_name }} --push -
