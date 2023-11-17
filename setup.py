@@ -21,7 +21,7 @@ def get_version_and_cmdclass(pkg_path):
 __version__, cmdclass = get_version_and_cmdclass(__package_name__)
 
 setup(
-    name=__package_name__,
+    name="gh-actions-test",
     version=__version__,
     description="Test package for GitHub Actions",
     long_description=(Path(__file__).parent.resolve() / "README.md").read_text(),
