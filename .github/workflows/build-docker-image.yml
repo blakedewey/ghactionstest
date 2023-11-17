@@ -11,7 +11,6 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - run: echo $(git des
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
