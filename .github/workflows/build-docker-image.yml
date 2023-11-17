@@ -42,4 +42,4 @@ jobs:
       -
         name: Build labeled image
         run: |
-          echo "FROM docker-image://${{ github.repository }}:${{ github.ref_name }}" | docker buildx build --label ci.digest=${{ steps.docker_build.outputs.digest }} -t ${{ github.repository }}:${{ github.ref_name }} --push -
+          echo "FROM base" | docker buildx build --build-context base=docker-image://${{ github.repository }}:${{ github.ref_name }} --label ci.digest=${{ steps.docker_build.outputs.digest }} -t ${{ github.repository }}:${{ github.ref_name }} --push -
