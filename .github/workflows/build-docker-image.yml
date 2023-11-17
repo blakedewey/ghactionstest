@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       -
@@ -40,13 +40,15 @@ jobs:
           build-args: |
             BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
       -
-        name: Add digest and push image
+        name: Create New Dockerfile
+        run: |
+          echo "FROM ${{ github.repository }}:${{ github.ref_name }}" > Dockerfile.new
+          echo "LABEL ci.digest=${{ steps.docker_build.outputs.digest }}" >> Dockerfile.new
+      -
+        name: Build labeled image and push
         uses: docker/build-push-action@v5
         with:
           context: .
+          file: Dockerfile.new
           push: true
-          labels: |
-            ci.digest=${{ steps.docker_build.outputs.digest }}
           tags: ${{ github.repository }}:${{ github.ref_name }}
-          build-args: |
-            BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
