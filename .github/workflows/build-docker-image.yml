@@ -46,7 +46,6 @@ jobs:
         run: echo "FROM ${{ github.repository }}:${{ github.ref_name }}" > Dockerfile.new
 
       - name: Build labeled image
-        id: docker_build
         uses: docker/build-push-action@v5
         with:
           context: .
