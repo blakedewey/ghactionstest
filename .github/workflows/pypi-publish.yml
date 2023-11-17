@@ -1,4 +1,4 @@
-name: build-docker-image
+name: Publish to PyPI
 
 on:
   push:
@@ -17,6 +17,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - run: git describe --long --always --first-parent
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
