@@ -25,7 +25,6 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          context: .
           load: true
           labels: |
             ci.image=${{ github.repository }}
