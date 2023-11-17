@@ -11,7 +11,12 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      -
+        name: Get build time
+        id: build_time
+        run: echo "time=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> "$GITHUB_OUTPUT"
+      -
+        name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -34,6 +39,7 @@ jobs:
           context: .
           load: true
           labels: |
+            ci.build_timestamp=${{ steps.build_time.outputs.time }}
             ci.image=${{ github.repository }}
             ci.tag=${{ github.ref_name }}
             ci.commit=${{ github.sha }}
