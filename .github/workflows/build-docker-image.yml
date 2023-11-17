@@ -40,6 +40,10 @@ jobs:
           build-args: |
             BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
       -
+        name: Check image
+        run: |
+          docker inspect ${{ github.repository }}:${{ github.ref_name }}
+      -
         name: Build labeled image and push
         run: |
           echo "FROM ${{ github.repository }}:${{ github.ref_name }}" | docker buildx build --label ci.digest=${{ steps.docker_build.outputs.digest }} -t ${{ github.repository }}:${{ github.ref_name }} --push -
