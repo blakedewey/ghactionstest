@@ -11,9 +11,7 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
-      -
-        name: Checkout git repo
-        uses: actions/checkout@v4
+      - run: echo $(git des
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -28,7 +26,6 @@ jobs:
         id: docker_build
         uses: docker/build-push-action@v5
         with:
-          context: .
           load: true
           labels: |
             ci.image=${{ github.repository }}
@@ -36,6 +33,8 @@ jobs:
             ci.commit=${{ github.sha }}
             ci.builder=${{ github.triggering_actor }}
           tags: ${{ github.repository }}:${{ github.ref_name }}
+          build-args: |
+            BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
       -
         name: Add digest and push image
         uses: docker/build-push-action@v5
