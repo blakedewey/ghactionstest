@@ -43,7 +43,6 @@ jobs:
         name: Create New Dockerfile
         run: |
           echo "FROM ${{ github.repository }}:${{ github.ref_name }}" > Dockerfile.new
-          echo "LABEL ci.digest=${{ steps.docker_build.outputs.digest }}" >> Dockerfile.new
       -
         name: Build labeled image and push
         uses: docker/build-push-action@v5
@@ -51,4 +50,6 @@ jobs:
           context: .
           file: Dockerfile.new
           push: true
+          labels: |
+            ci.digest=${{ steps.docker_build.outputs.digest }}
           tags: ${{ github.repository }}:${{ github.ref_name }}
