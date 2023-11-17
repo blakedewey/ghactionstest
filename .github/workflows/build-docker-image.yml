@@ -45,7 +45,7 @@ jobs:
             ci.tag=${{ github.ref_name }}
             ci.commit=${{ github.sha }}
             ci.builder=${{ github.triggering_actor }}
-          tags: ${{ github.repository }}:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
           build-args: |
             BUILDKIT_CONTEXT_KEEP_GIT_DIR=true
       -
@@ -59,4 +59,4 @@ jobs:
           file: Dockerfile.new
           push: true
           labels: ci.digest=${{ steps.docker_build.outputs.digest }}
-          tags: ${{ github.repository }}:${{ github.ref_name }}
+          tags: ghcr.io/${{ github.repository }}:${{ github.ref_name }}
