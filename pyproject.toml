@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=80", "setuptools-scm>=9.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gh-actions-test"
+dynamic = ["version"]
+description = "Test package for GitHub Actions"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [
+    {name = "Blake Dewey", email = "blake.dewey@jhu.edu"},
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: Apache Software License",
+  "Operating System :: OS Independent",
+]
+
+[tool.setuptools_scm]
+version_file = "ghactionstest/_static_version.py"
+fallback_version = "0+unknown"
