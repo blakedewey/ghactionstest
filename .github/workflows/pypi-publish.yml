@@ -18,7 +18,16 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          fetch-tags: true
+      
+      - name: Fetch tags
+        run: git fetch --force --tags
+
+      - name: Verify ref and version context
+        run: |
+          echo "github.ref=$GITHUB_REF"
+          echo "github.sha=$GITHUB_SHA"
+          git describe --tags --always || true
+          git tag --points-at HEAD || true
 
       - name: Set up Python
         uses: actions/setup-python@v5
