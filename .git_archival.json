@@ -1,6 +1,0 @@
-{
-  "commit": "$Format:%H$",
-  "commit_date": "$Format:%cI$",
-  "describe": "$Format:%(describe:tags=true,match=v[0-9]*)$",
-  "ref_names": "$Format:%D$"
-}
