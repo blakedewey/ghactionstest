@@ -20,7 +20,7 @@ RUN echo -e "{\n \
 
 # Copy package and install
 COPY . /tmp/ghactionstest-src/
-RUN cd /tmp/ghactionstest-src/ && git describe --long --always
+RUN cd /tmp/ghactionstest-src/ && git describe --long --always --tags --dirty
 RUN pip install --no-cache-dir /tmp/ghactionstest-src/ && \
     rm -rf /tmp/ghactionstest-src/
 
