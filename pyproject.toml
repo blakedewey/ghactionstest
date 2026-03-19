@@ -25,5 +25,5 @@ classifiers = [
 version = {attr = "ghactionstest.__version__"}
 
 [tool.setuptools.cmdclass]
-build_py = "_version.build_py"
-sdist = "_version.sdist"
+build_py = "_version.build_py_cls"
+sdist = "_version.sdist_cls"
