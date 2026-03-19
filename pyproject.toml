@@ -40,7 +40,7 @@ dirty = "{base_version}+dirty"
 distance-dirty = "{base_version}.dev{distance}+{vcs}{rev}.dirty"
 
 [tool.versioningit.write]
-file = "radifox/_static_version.py"
+file = "ghactionstest/_static_version.py"
 template = '''
 version = "{version}"
 '''
