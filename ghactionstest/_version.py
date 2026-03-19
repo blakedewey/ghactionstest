@@ -147,7 +147,7 @@ def get_cmd_class():
     from setuptools.command.sdist import sdist as _sdist
     
     def write_static_version(version: str) -> None:
-        STATIC_VERSION_FILE.write_text(
+        (Path(__file__).resolve().parent / "_static_version.py").write_text(
             "# This file is auto-generated at build time.\n"
             f'version = "{version}"\n',
             encoding="utf-8",
@@ -163,7 +163,7 @@ def get_cmd_class():
             write_static_version(get_version())
             super().run()
     
-    return {"build_py": build_py(), "sdist": sdist}
+    return {"build_py": build_py, "sdist": sdist}
 
 _cmdclass = get_cmd_class()
 build_py_cls = _cmdclass["build_py"]
