@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=61", "versioningit>=3.3"]
-build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta
 
 [project]
 name = "gh-actions-test"
@@ -21,26 +21,9 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-[tool.versioningit]
-default-version = "0+unknown"
+[tool.setuptools.dynamic]
+version = {attr = "ghactionstest.__version__"}
 
-[tool.versioningit.vcs]
-method = "git"
-match = ["v*"]
-
-[tool.versioningit.tag2version]
-rmprefix = "v"
-
-[tool.versioningit.next-version]
-method = "null"
-
-[tool.versioningit.format]
-distance = "{base_version}.dev{distance}+{vcs}{rev}"
-dirty = "{base_version}+dirty"
-distance-dirty = "{base_version}.dev{distance}+{vcs}{rev}.dirty"
-
-[tool.versioningit.write]
-file = "ghactionstest/_static_version.py"
-template = '''
-version = "{version}"
-'''
+[tool.setuptools.cmdclass]
+build_py = "_version.build_py"
+sdist = "_version.sdist"
