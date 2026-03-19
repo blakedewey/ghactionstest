@@ -4,7 +4,7 @@
 from pathlib import Path
 
 
-def get_version(distribution_name: str) -> str:
+def get_version() -> str:
     """
     Return the best available version string.
 
@@ -15,10 +15,6 @@ def get_version(distribution_name: str) -> str:
     4. Generated static version file
     5. Fallback constant
     """
-    version = _version_from_importlib(distribution_name)
-    if version is not None:
-        return version
-
     package_root = Path(__file__).resolve().parent
 
     version = _version_from_git(package_root)
@@ -34,18 +30,6 @@ def get_version(distribution_name: str) -> str:
         return version
 
     return "0+unknown"
-
-
-def _version_from_importlib(distribution_name: str) -> str | None:
-    try:
-        from importlib.metadata import PackageNotFoundError, version
-    except ImportError:  # pragma: no cover
-        from importlib_metadata import PackageNotFoundError, version  # type: ignore
-
-    try:
-        return version(distribution_name)
-    except PackageNotFoundError:
-        return None
 
 
 def _version_from_git(package_root: Path) -> str | None:
@@ -156,3 +140,31 @@ def pep440_format(release: str, dev: str | None, labels: list[str] | None) -> st
         version_parts.append(".".join(labels))
 
     return "".join(version_parts)
+
+
+def get_cmd_class():
+    from setuptools.command.build_py import build_py as _build_py
+    from setuptools.command.sdist import sdist as _sdist
+    
+    def write_static_version(version: str) -> None:
+        STATIC_VERSION_FILE.write_text(
+            "# This file is auto-generated at build time.\n"
+            f'version = "{version}"\n',
+            encoding="utf-8",
+        )
+    
+    class build_py(_build_py):
+        def run(self):
+            write_static_version(get_version())
+            super().run()
+    
+    class sdist(_sdist):
+        def run(self):
+            write_static_version(get_version())
+            super().run()
+    
+    return {"build_py": build_py(), "sdist": sdist}
+
+_cmdclass = get_cmd_class()
+_build_py = _cmdclass["build_py"]
+_sdist = _cmdclass["sdist"]
