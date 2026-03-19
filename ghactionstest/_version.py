@@ -166,5 +166,5 @@ def get_cmd_class():
     return {"build_py": build_py(), "sdist": sdist}
 
 _cmdclass = get_cmd_class()
-_build_py = _cmdclass["build_py"]
-_sdist = _cmdclass["sdist"]
+build_py_cls = _cmdclass["build_py"]
+sdist_cls = _cmdclass["sdist"]
