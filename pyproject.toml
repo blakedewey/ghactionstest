@@ -1,5 +1,5 @@
 [build-system]
-requires = ["setuptools>=80", "setuptools-scm>=9.2"]
+requires = ["setuptools>=61", "versioningit>=3.3"]
 build-backend = "setuptools.build_meta"
 
 [project]
@@ -21,6 +21,26 @@ classifiers = [
   "Operating System :: OS Independent",
 ]
 
-[tool.setuptools_scm]
-version_file = "ghactionstest/_static_version.py"
-fallback_version = "0+unknown"
+[tool.versioningit]
+default-version = "0+unknown"
+
+[tool.versioningit.vcs]
+method = "git"
+match = ["v*"]
+
+[tool.versioningit.tag2version]
+rmprefix = "v"
+
+[tool.versioningit.next-version]
+method = "null"
+
+[tool.versioningit.format]
+distance = "{base_version}.dev{distance}+{vcs}{rev}"
+dirty = "{base_version}+dirty"
+distance-dirty = "{base_version}.dev{distance}+{vcs}{rev}.dirty"
+
+[tool.versioningit.write]
+file = "radifox/_static_version.py"
+template = '''
+version = "{version}"
+'''
