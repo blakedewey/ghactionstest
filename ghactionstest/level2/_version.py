@@ -23,7 +23,7 @@ def get_version() -> str:
     if version is not None:
         return version
 
-    version = _version_from_static()
+    version = _version_from_static(package_root)
     if version is not None:
         return version
 
@@ -109,13 +109,18 @@ def _version_from_git_archive(package_root: Path) -> str | None:
     return pep440_format("unknown", dev=None, labels=["g{}".format(commit[:7])])
 
 
-def _version_from_static() -> str | None:
-    try:
-        from ._static_version import version as static_version
-    except ImportError:
-        return None
+def _version_from_static(package_root: Path) -> str | None:
+    import json
 
-    return static_version or None
+    static_path = package_root / ".static_version.json"
+    if not static_path.exists():
+        return None
+    
+    try:
+        data = json.loads(static_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return None
+    return data.get("version")
 
 
 def pep440_format(release: str, dev: str | None, labels: list[str] | None) -> str:
