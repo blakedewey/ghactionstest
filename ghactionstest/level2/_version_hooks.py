@@ -20,7 +20,7 @@ def _static_version_path(dist) -> Path:
 def _write_static_version(dist) -> None:
     version = dist.get_version()
     _static_version_path(dist).write_text(
-        f'{"version": "{version}"}',
+        f'{{"version": "{version}"}}',
         encoding="utf-8",
     )
     
