@@ -14,9 +14,7 @@ def _version_module(dist):
         try:
             return import_module(mod_name)
         except ModuleNotFoundError as e:
-            if e.name == mod_name:
-                continue
-            raise
+            continue
     raise RuntimeError("_version not found in any available package.")
 
 
