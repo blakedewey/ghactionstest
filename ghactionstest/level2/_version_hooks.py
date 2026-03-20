@@ -8,7 +8,7 @@ def _static_version_path(dist) -> Path:
     pkg_dirs = dist.package_dir or {}
     root = Path(pkg_dirs.get("", "."))
     for pkg in sorted(dist.packages or [], key=lambda p: (p.count("."), p)):
-        if pkg in package_dir:
+        if pkg in pkg_dirs:
             pkg_dir = Path(pkg_dirs[pkg])
         else:
             pkg_dir = root.joinpath(*pkg.split("."))
