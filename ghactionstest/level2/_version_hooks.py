@@ -7,7 +7,7 @@ from setuptools.command.sdist import sdist as _sdist
 def _static_version_path(dist) -> Path:
     package_dir = dist.package_dir or {}
     root = Path(package_dir.get("", "."))
-    for pkg in _candidate_packages(dist):
+    for pkg in sorted(dist.packages or [], key=lambda p: (p.count("."), p)):
         if package in package_dir:
             pkg_dir = Path(package_dir[package])
         else:
