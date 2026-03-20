@@ -6,19 +6,15 @@ from setuptools.command.sdist import sdist as _sdist
 
 
 def _version_module(dist):
-    packages = dist.packages or []
-    candidates = sorted(
-        pkg for pkg in packages
-        if f"{pkg}._version" in dist.packages
-    )
-
+    packages = dist.packages or [dist.get_name().replace("-", "_")]
     # Prefer the shortest declared package path
-    if candidates:
-        pkg = sorted(candidates, key=lambda p: (p.count("."), p))[0]
-    else:
-        pkg = dist.get_name().replace("-", "_")
-
-    return import_module(f"{pkg}._version")
+    candidates = sorted(packages, key=lambda p: (p.count("."), p))
+    for pkg in candidates:
+        try:
+            return import_module(f"{pkg}._version")
+        except ImportError:
+            continue
+    raise RuntimeError("_version not found in any available package")
 
 
 def _write_static_version(dist) -> None:
