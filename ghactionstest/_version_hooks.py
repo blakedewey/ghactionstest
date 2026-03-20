@@ -6,11 +6,10 @@ from setuptools.command.sdist import sdist as _sdist
 
 
 def _version_module(dist):
-    print(dist.packages)
     packages = dist.packages or []
     candidates = sorted(
         pkg for pkg in packages
-        if pkg.endswith("._version") is False
+        if f"{pkg}._version" in dist.packages
     )
 
     # Prefer the shortest declared package path
