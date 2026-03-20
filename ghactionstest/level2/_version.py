@@ -110,17 +110,33 @@ def _version_from_git_archive(package_root: Path) -> str | None:
 
 
 def _version_from_static(package_root: Path) -> str | None:
-    import json
+    import ast
 
-    static_path = package_root / ".static_version.json"
+    static_path = package_root / "_static_version.py"
     if not static_path.exists():
         return None
-    
+
     try:
-        data = json.loads(static_path.read_text(encoding="utf-8"))
-    except (OSError, json.JSONDecodeError):
+        source = static_path.read_text(encoding="utf-8")
+    except OSError:
         return None
-    return data.get("version")
+
+    try:
+        tree = ast.parse(source, filename=str(static_path))
+    except SyntaxError:
+        return None
+
+    for node in tree.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name) and target.id == "version":
+                    try:
+                        value = ast.literal_eval(node.value)
+                    except (ValueError, SyntaxError):
+                        return None
+                    return value if isinstance(value, str) else None
+
+    return None
 
 
 def pep440_format(release: str, dev: str | None, labels: list[str] | None) -> str:

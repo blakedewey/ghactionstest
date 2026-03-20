@@ -13,14 +13,15 @@ def _static_version_path(dist) -> Path:
         else:
             pkg_dir = root.joinpath(*pkg.split("."))
         if (pkg_dir / "_version.py").exists():
-            return pkg_dir / ".static_version.json"
+            return pkg_dir / "_static_version.py"
     raise RuntimeError("_version.py not found in any declared package")
 
 
 def _write_static_version(dist) -> None:
     version = dist.get_version()
     _static_version_path(dist).write_text(
-        f'{{"version": "{version}"}}',
+        "# This file is auto-generated at build time.\n"
+        f'version = "{version}"\n',
         encoding="utf-8",
     )
     
