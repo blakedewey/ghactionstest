@@ -1,28 +1,25 @@
-from importlib import import_module
 from pathlib import Path
 
 from setuptools.command.build_py import build_py as _build_py
 from setuptools.command.sdist import sdist as _sdist
 
 
-def _version_module(dist):
-    packages = dist.packages or []
-    # Prefer the shortest declared package path
-    candidates = sorted(packages, key=lambda p: (p.count("."), p))
-    for pkg in candidates:
-        mod_name = f"{pkg}._version"
-        try:
-            return import_module(mod_name)
-        except ModuleNotFoundError as e:
-            continue
-    raise RuntimeError("_version not found in any available package.")
+def _static_version_path(dist) -> Path:
+    package_dir = dist.package_dir or {}
+    root = Path(package_dir.get("", "."))
+    for pkg in _candidate_packages(dist):
+        if package in package_dir:
+            pkg_dir = Path(package_dir[package])
+        else:
+            pkg_dir = root.joinpath(*package.split("."))
+        if (pkg_dir / "_version.py").exists():
+            return pkg_dir / "_static_version.py"
+    raise RuntimeError("_version.py not found in any declared package")
 
 
 def _write_static_version(dist) -> None:
-    mod = _version_module(dist)
-    version = mod.get_version()
-    path = Path(mod.__file__).resolve().parent / "_static_version.py"
-    path.write_text(
+    version = dist.get_version()
+    _static_version_path(dist).write_text(
         "# This file is auto-generated at build time.\n"
         f'version = "{version}"\n',
         encoding="utf-8",
