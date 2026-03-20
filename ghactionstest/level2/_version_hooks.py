@@ -5,13 +5,13 @@ from setuptools.command.sdist import sdist as _sdist
 
 
 def _static_version_path(dist) -> Path:
-    package_dir = dist.package_dir or {}
-    root = Path(package_dir.get("", "."))
+    pkg_dirs = dist.package_dir or {}
+    root = Path(pkg_dirs.get("", "."))
     for pkg in sorted(dist.packages or [], key=lambda p: (p.count("."), p)):
-        if package in package_dir:
-            pkg_dir = Path(package_dir[package])
+        if pkg in package_dir:
+            pkg_dir = Path(pkg_dirs[pkg])
         else:
-            pkg_dir = root.joinpath(*package.split("."))
+            pkg_dir = root.joinpath(*pkg.split("."))
         if (pkg_dir / "_version.py").exists():
             return pkg_dir / "_static_version.py"
     raise RuntimeError("_version.py not found in any declared package")
