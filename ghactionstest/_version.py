@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# This file is part of 'miniver': https://github.com/jbweston/miniver
 
 from pathlib import Path
 
@@ -9,11 +8,10 @@ def get_version() -> str:
     Return the best available version string.
 
     Resolution order:
-    1. Installed distribution metadata
-    2. Live Git checkout
-    3. Git archival metadata
-    4. Generated static version file
-    5. Fallback constant
+    1. Live Git checkout
+    2. Git archival metadata
+    3. Generated static version file
+    4. Fallback constant
     """
     package_root = Path(__file__).resolve().parent
 
@@ -33,38 +31,33 @@ def get_version() -> str:
 
 
 def _version_from_git(package_root: Path) -> str | None:
-    # git describe --first-parent does not take into account tags from branches
-    # that were merged-in. The '--long' flag gets us the 'dev' version and
+    # The '--long' flag gets us the 'dev' version and
     # git hash, '--always' returns the git hash even if there are no tags.
     import subprocess
 
-    for opts in [["--first-parent"], []]:
-        try:
-            p = subprocess.Popen(
-                ["git", "describe", "--long", "--always", "--tags", "--dirty"] + opts,
-                cwd=package_root,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-            )
-        except OSError:
-            return None
-        if p.wait() == 0:
-            break
-    else:
+    try:
+        p = subprocess.Popen(
+            ["git", "describe", "--long", "--always", "--tags", "--dirty"],
+            cwd=package_root,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+        )
+    except OSError:
+        return None
+
+    if p.wait() != 0:
         return None
 
     description = (
         p.communicate()[0]
         .decode()
-        .lstrip("v")  # Tags can have a leading 'v', but the version should not
         .rstrip("\n")
-        .rsplit("-")  # Split the latest tag, commits since tag, and hash
+        .rsplit("-")  # Split the latest tag, commits since tag, hash, and dirty
     )
 
     try:
         release, dev, git = description[:3]
     except ValueError:  # No tags, only the git hash
-        # prepend 'g' to match with format returned by 'git describe'
         git = "g{}".format(*description)
         release = "unknown"
         dev = None
@@ -142,29 +135,4 @@ def pep440_format(release: str, dev: str | None, labels: list[str] | None) -> st
     return "".join(version_parts)
 
 
-def get_cmd_class():
-    from setuptools.command.build_py import build_py as _build_py
-    from setuptools.command.sdist import sdist as _sdist
-    
-    def write_static_version(version: str) -> None:
-        (Path(__file__).resolve().parent / "_static_version.py").write_text(
-            "# This file is auto-generated at build time.\n"
-            f'version = "{version}"\n',
-            encoding="utf-8",
-        )
-    
-    class build_py(_build_py):
-        def run(self):
-            write_static_version(get_version())
-            super().run()
-    
-    class sdist(_sdist):
-        def run(self):
-            write_static_version(get_version())
-            super().run()
-    
-    return {"build_py": build_py, "sdist": sdist}
-
-_cmdclass = get_cmd_class()
-build_py_cls = _cmdclass["build_py"]
-sdist_cls = _cmdclass["sdist"]
+__version__ = get_version()
