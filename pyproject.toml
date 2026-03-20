@@ -22,8 +22,8 @@ classifiers = [
 ]
 
 [tool.setuptools.dynamic]
-version = {attr = "ghactionstest.__version__"}
+version = {attr = "ghactionstest.level2._version.__version__"}
 
 [tool.setuptools.cmdclass]
-build_py = "ghactionstest._version_hooks.build_py"
-sdist = "ghactionstest._version_hooks.sdist"
+build_py = "ghactionstest.level2._version_hooks.build_py"
+sdist = "ghactionstest.level2._version_hooks.sdist"
