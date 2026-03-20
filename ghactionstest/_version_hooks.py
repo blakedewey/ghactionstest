@@ -6,6 +6,7 @@ from setuptools.command.sdist import sdist as _sdist
 
 
 def _version_module(dist):
+    print(dist.packages)
     packages = dist.packages or []
     candidates = sorted(
         pkg for pkg in packages
